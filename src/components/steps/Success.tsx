@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Check, Globe, Mail, ExternalLink } from "lucide-react";
+import { Check, Globe, Mail, ExternalLink, Users, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface SuccessProps {
@@ -42,6 +42,14 @@ const Success = ({ domain, emailName, provider, onDashboard }: SuccessProps) => 
   const handleGoToDashboard = () => {
     navigate("/dashboard");
   };
+  
+  const handleGoToIntegration = () => {
+    navigate("/platform-integration");
+  };
+  
+  const handleGoToManageAccounts = () => {
+    navigate("/manage-accounts");
+  };
 
   return (
     <div className="max-w-md mx-auto text-center">
@@ -80,6 +88,14 @@ const Success = ({ domain, emailName, provider, onDashboard }: SuccessProps) => 
       <div className="space-y-4">
         <Button onClick={handleGoToDashboard} className="w-full">
           Go to Dashboard
+        </Button>
+        
+        <Button onClick={handleGoToIntegration} variant="outline" className="w-full gap-2">
+          <Settings className="h-4 w-4" /> Email Platform Integration
+        </Button>
+        
+        <Button onClick={handleGoToManageAccounts} variant="outline" className="w-full gap-2">
+          <Users className="h-4 w-4" /> Manage Email Accounts
         </Button>
         
         <Button variant="outline" className="w-full gap-2" asChild>

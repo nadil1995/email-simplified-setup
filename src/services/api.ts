@@ -40,4 +40,46 @@ export const emailSetupAPI = {
   },
 };
 
+// Email Platform Integration API
+export const emailPlatformAPI = {
+  // Initiate OAuth flow for Google
+  connectToGoogle: () => {
+    window.location.href = `${API_URL}/auth/google`;
+  },
+
+  // Initiate OAuth flow for Microsoft
+  connectToMicrosoft: () => {
+    window.location.href = `${API_URL}/auth/microsoft`;
+  },
+
+  // Check if user is connected to a platform
+  checkConnection: async (provider: string) => {
+    try {
+      const response = await api.get(`/auth/status/${provider}`);
+      return response.data.connected;
+    } catch (error) {
+      console.error(`Error checking ${provider} connection:`, error);
+      return false;
+    }
+  },
+
+  // Create email account on the connected platform
+  createEmailAccount: async (data: {
+    provider: string;
+    domain: string;
+    emailName: string;
+    firstName?: string;
+    lastName?: string;
+    password?: string;
+  }) => {
+    try {
+      const response = await api.post('/email-accounts', data);
+      return response.data;
+    } catch (error) {
+      console.error("Error creating email account:", error);
+      throw error;
+    }
+  }
+};
+
 export default api;
