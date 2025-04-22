@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, Gmail, Mail, Outlook, X } from "lucide-react";
+import { Check, Mail, MailQuestion, X } from "lucide-react";
 import { emailPlatformAPI } from "@/services/api";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -65,7 +65,7 @@ const PlatformIntegration = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Gmail className="h-5 w-5" />
+                <Mail className="h-5 w-5" />
                 Google Workspace Integration
               </CardTitle>
               <CardDescription>
@@ -144,7 +144,7 @@ const PlatformIntegration = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Outlook className="h-5 w-5" />
+                <MailQuestion className="h-5 w-5" />
                 Microsoft 365 Integration
               </CardTitle>
               <CardDescription>

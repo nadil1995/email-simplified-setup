@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Check, Globe, Mail, ExternalLink, Users, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
