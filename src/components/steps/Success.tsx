@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Globe, Mail, ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SuccessProps {
   domain: string;
@@ -10,25 +11,14 @@ interface SuccessProps {
 }
 
 const Success = ({ domain, emailName, provider, onDashboard }: SuccessProps) => {
-  const getProviderUrl = () => {
-    switch (provider) {
-      case "google":
-        return "https://mail.google.com";
-      case "microsoft":
-        return "https://outlook.office.com";
-      case "aws":
-        return "https://mail.awsapps.com/mail";
-      default:
-        return "#";
-    }
-  };
-  
+  const navigate = useNavigate();
+
   const getProviderName = () => {
     switch (provider) {
       case "google":
-        return "Gmail";
+        return "Google Workspace";
       case "microsoft":
-        return "Outlook";
+        return "Microsoft 365";
       case "aws":
         return "AWS WorkMail";
       default:
@@ -36,59 +26,72 @@ const Success = ({ domain, emailName, provider, onDashboard }: SuccessProps) => 
     }
   };
 
+  const getProviderLoginUrl = () => {
+    switch (provider) {
+      case "google":
+        return "https://admin.google.com";
+      case "microsoft":
+        return "https://admin.microsoft.com";
+      case "aws":
+        return "https://console.aws.amazon.com/workmail";
+      default:
+        return "#";
+    }
+  };
+
+  const handleGoToDashboard = () => {
+    navigate("/dashboard");
+  };
+
   return (
     <div className="max-w-md mx-auto text-center">
-      <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center mx-auto mb-6">
-        <Check className="h-8 w-8 text-brand-green" />
+      <div className="mb-6">
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Check className="h-8 w-8 text-green-600" />
+        </div>
+        <h2 className="text-2xl font-bold mb-2">Setup Complete!</h2>
+        <p className="text-muted-foreground">
+          Your email has been successfully configured.
+        </p>
       </div>
       
-      <h2 className="text-2xl font-bold mb-3">Your Email is Ready!</h2>
-      
-      <p className="text-muted-foreground mb-6">
-        Your new email address {emailName}@{domain} has been successfully configured 
-        and is ready to use.
-      </p>
-      
-      <div className="bg-card border rounded-lg p-6 mb-6">
-        <h3 className="font-medium mb-3">Email Account Details</h3>
-        <div className="space-y-2 text-left">
-          <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Email Address:</span>
-            <span className="text-sm font-medium">{emailName}@{domain}</span>
+      <div className="bg-muted/30 border rounded-lg p-4 mb-6 text-left">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+            <Mail className="h-4 w-4 text-primary" />
           </div>
-          <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Provider:</span>
-            <span className="text-sm font-medium">{getProviderName()}</span>
+          <div>
+            <div className="text-sm font-medium">Email Address</div>
+            <div className="text-sm text-muted-foreground">{emailName}@{domain}</div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Status:</span>
-            <span className="text-sm font-medium text-brand-green flex items-center gap-1">
-              <Check className="h-3 w-3" /> Active
-            </span>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+            <Globe className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <div className="text-sm font-medium">Provider</div>
+            <div className="text-sm text-muted-foreground">{getProviderName()}</div>
           </div>
         </div>
       </div>
       
       <div className="space-y-4">
-        <Button 
-          className="w-full"
-          onClick={() => window.open(getProviderUrl(), "_blank")}
-        >
-          Access Your Email
+        <Button onClick={handleGoToDashboard} className="w-full">
+          Go to Dashboard
         </Button>
         
-        <Button 
-          variant="outline" 
-          className="w-full"
-          onClick={onDashboard}
-        >
-          Go to Dashboard
+        <Button variant="outline" className="w-full gap-2" asChild>
+          <a href={getProviderLoginUrl()} target="_blank" rel="noopener noreferrer">
+            Open {getProviderName()} Admin <ExternalLink className="h-4 w-4" />
+          </a>
         </Button>
       </div>
       
-      <p className="text-sm text-muted-foreground mt-6">
-        Need help? <a href="#" className="text-primary underline">Contact support</a>
-      </p>
+      <div className="mt-8 text-sm text-muted-foreground">
+        Need help? <a href="#" className="text-primary underline">Contact our support team</a>
+      </div>
     </div>
   );
 };

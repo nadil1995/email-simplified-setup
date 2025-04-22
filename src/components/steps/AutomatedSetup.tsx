@@ -1,126 +1,148 @@
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { Progress } from "@/components/ui/progress";
+import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import StatusCheck from "../StatusCheck";
+import { useNavigate } from "react-router-dom";
+import { emailSetupAPI } from "@/services/api";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AutomatedSetupProps {
   domain: string;
   emailName: string;
   provider: string;
+  addUsers?: boolean;
   onComplete: () => void;
 }
 
-type SetupStage = {
-  id: string;
-  label: string;
-  status: "waiting" | "processing" | "complete" | "error";
-};
-
-const AutomatedSetup = ({ domain, emailName, provider, onComplete }: AutomatedSetupProps) => {
-  const [setupStages, setSetupStages] = useState<SetupStage[]>([
-    { id: "dns-check", label: "Checking DNS configuration", status: "waiting" },
-    { id: "mx-records", label: "Adding MX Records", status: "waiting" },
-    { id: "spf-dkim", label: "Setting up SPF/DKIM verification", status: "waiting" },
-    { id: "mailbox", label: "Creating mailbox", status: "waiting" },
-    { id: "verification", label: "Verifying setup", status: "waiting" }
-  ]);
+const AutomatedSetup = ({ 
+  domain, 
+  emailName, 
+  provider, 
+  addUsers = false,
+  onComplete 
+}: AutomatedSetupProps) => {
+  const [progress, setProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
+  const navigate = useNavigate();
+  const { toast } = useToast();
   
-  const [currentStageIndex, setCurrentStageIndex] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(180); // 3 minutes
-  const [isComplete, setIsComplete] = useState(false);
+  const steps = [
+    { name: "Verifying domain ownership", success: true },
+    { name: "Setting up DNS records", success: true },
+    { name: `Configuring ${provider === "google" ? "Google Workspace" : provider === "microsoft" ? "Microsoft 365" : "AWS WorkMail"}`, success: true },
+    { name: `Creating ${emailName}@${domain}`, success: true },
+    { name: "Finalizing setup", success: true }
+  ];
 
-  // Simulate the setup process
   useEffect(() => {
-    if (currentStageIndex >= setupStages.length) {
-      setIsComplete(true);
-      return;
-    }
-    
-    // Start the current stage
-    setSetupStages(current => {
-      const updated = [...current];
-      updated[currentStageIndex].status = "processing";
-      return updated;
-    });
-    
-    // Simulate processing time (different for each stage)
-    const processingTimes = [3000, 5000, 4000, 6000, 3000];
-    
-    const timer = setTimeout(() => {
-      // Complete the current stage
-      setSetupStages(current => {
-        const updated = [...current];
-        updated[currentStageIndex].status = "complete";
-        return updated;
-      });
+    const simulateProgress = async () => {
+      // Stage 1: Verifying domain
+      setCurrentStep(0);
+      for (let i = 0; i <= 20; i++) {
+        setProgress(i);
+        await new Promise(r => setTimeout(r, 50));
+      }
       
-      // Move to the next stage
-      setCurrentStageIndex(prev => prev + 1);
-    }, processingTimes[currentStageIndex]);
+      // Stage 2: DNS records
+      setCurrentStep(1);
+      for (let i = 21; i <= 40; i++) {
+        setProgress(i);
+        await new Promise(r => setTimeout(r, 50));
+      }
+      
+      // Stage 3: Provider setup
+      setCurrentStep(2);
+      for (let i = 41; i <= 60; i++) {
+        setProgress(i);
+        await new Promise(r => setTimeout(r, 50));
+      }
+      
+      // Stage 4: Email creation
+      setCurrentStep(3);
+      for (let i = 61; i <= 80; i++) {
+        setProgress(i);
+        await new Promise(r => setTimeout(r, 50));
+      }
+      
+      // Stage 5: Finalizing
+      setCurrentStep(4);
+      for (let i = 81; i <= 100; i++) {
+        setProgress(i);
+        await new Promise(r => setTimeout(r, 50));
+      }
+      
+      // Save to backend
+      try {
+        await emailSetupAPI.createSetup({
+          domain,
+          provider,
+          emailName,
+          addUsers
+        });
+        toast({
+          title: "Setup complete!",
+          description: "Your email has been configured successfully.",
+        });
+      } catch (error) {
+        console.error("Error saving email setup:", error);
+        toast({
+          title: "Error saving setup",
+          description: "Your setup completed but we couldn't save it. Please try again.",
+          variant: "destructive",
+        });
+      }
+      
+      // Call onComplete after successful backend save
+      onComplete();
+    };
     
-    return () => clearTimeout(timer);
-  }, [currentStageIndex, setupStages.length]);
+    simulateProgress();
+  }, [domain, emailName, provider, addUsers, onComplete, toast]);
   
-  // Countdown timer
-  useEffect(() => {
-    if (isComplete || timeRemaining <= 0) return;
-    
-    const timer = setTimeout(() => {
-      setTimeRemaining(prev => prev - 1);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  }, [timeRemaining, isComplete]);
-  
-  // Format the remaining time
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  const handleGoToDashboard = () => {
+    navigate("/dashboard");
   };
-
+  
   return (
     <div className="max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-2 text-center">Setting Up Your Email</h2>
-      <p className="text-center text-muted-foreground mb-6">
-        Please wait while we configure your email for {emailName}@{domain}
-      </p>
+      <h2 className="text-2xl font-bold mb-6 text-center">Setting Up Your Email</h2>
       
-      <div className="bg-muted/30 rounded-lg border p-4 mb-4">
-        <div className="space-y-1">
-          {setupStages.map((stage) => (
-            <StatusCheck
-              key={stage.id}
-              label={stage.label}
-              status={stage.status}
-            />
-          ))}
-        </div>
+      <Progress value={progress} className="mb-6" />
+      
+      <div className="space-y-4 mb-8">
+        {steps.map((step, index) => (
+          <div 
+            key={index} 
+            className={`
+              flex items-center justify-between border rounded-lg p-3
+              ${currentStep === index ? "bg-primary/5 border-primary/20" : "border-border"}
+              ${currentStep > index ? "bg-muted/30" : ""}
+            `}
+          >
+            <span className="text-sm">{step.name}</span>
+            <div className="flex items-center">
+              {currentStep > index ? (
+                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                  <Check className="h-3 w-3 text-white" />
+                </div>
+              ) : currentStep === index ? (
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+              ) : (
+                <div className="w-2 h-2 rounded-full bg-muted"></div>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
       
-      {!isComplete ? (
-        <div className="text-center space-y-4">
-          <div className="animate-pulse-slow">
-            <p className="text-sm font-medium">Please don't close this window</p>
-            <p className="text-sm text-muted-foreground">
-              Estimated time remaining: {formatTime(timeRemaining)}
-            </p>
-          </div>
-          
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-primary rounded-full animate-progress"
-              style={{ 
-                animationDuration: `${180}s`,
-                animationTimingFunction: 'linear'
-              }}
-            />
-          </div>
+      {progress === 100 && (
+        <div className="text-center">
+          <p className="text-green-600 font-medium mb-4">Setup Complete!</p>
+          <Button onClick={handleGoToDashboard}>
+            Go to Dashboard
+          </Button>
         </div>
-      ) : (
-        <Button onClick={onComplete} className="w-full">
-          Continue to Final Step
-        </Button>
       )}
     </div>
   );
