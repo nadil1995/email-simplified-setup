@@ -1,30 +1,29 @@
-
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { authAPI } from "@/services/api";
 
 const Home = () => {
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    // If user is already logged in, redirect to dashboard
-    if (authAPI.isLoggedIn()) {
-      navigate("/dashboard");
-    }
-  }, [navigate]);
+  const isLoggedIn = authAPI.isLoggedIn();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex flex-col">
       <header className="container py-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Email Setup Service</h1>
         <div className="flex gap-4">
-          <Button asChild variant="outline">
-            <Link to="/auth">Login</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/auth">Get Started</Link>
-          </Button>
+          {!isLoggedIn ? (
+            <>
+              <Button asChild variant="outline">
+                <Link to="/auth">Login</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/auth">Get Started</Link>
+              </Button>
+            </>
+          ) : (
+            <Button asChild>
+              <Link to="/setup">Go to Setup</Link>
+            </Button>
+          )}
         </div>
       </header>
       

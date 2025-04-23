@@ -30,7 +30,7 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
           
-          {/* Protected routes */}
+          {/* Protected routes - require authentication */}
           <Route path="/setup" element={
             <ProtectedRoute>
               <Setup />
