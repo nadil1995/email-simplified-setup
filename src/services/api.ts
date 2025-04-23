@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 // Update base URL to point to your API Gateway endpoint
@@ -135,7 +134,7 @@ export const emailPlatformAPI = {
   }
 };
 
-// Domain Verification API
+// Domain Management API with proper error handling
 export const domainAPI = {
   startVerification: async (domain: string) => {
     try {
@@ -160,11 +159,12 @@ export const domainAPI = {
     }
   },
   
-  setupDnsRecords: async (domain: string, provider: string) => {
+  setupDnsRecords: async (domain: string, provider: string, hostedZoneId?: string) => {
     try {
       const response = await api.post("/domain/setup-dns", { 
         domain,
-        provider
+        provider,
+        hostedZoneId
       });
       return response.data;
     } catch (error) {
