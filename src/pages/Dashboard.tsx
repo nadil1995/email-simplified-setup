@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { emailSetupAPI } from "@/services/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Mail, Globe, Users, ArrowRight } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { LayoutDashboard } from "lucide-react";
 
 interface EmailSetup {
   id: number;
@@ -55,12 +55,15 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="container py-8">
+    <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Email Dashboard</h1>
-        <Button asChild>
-          <Link to="/">Set Up New Email <ArrowRight className="ml-2 h-4 w-4" /></Link>
-        </Button>
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <Link to="/admin">
+          <Button variant="outline" className="gap-2">
+            <LayoutDashboard className="h-4 w-4" />
+            Admin Panel
+          </Button>
+        </Link>
       </div>
 
       {loading ? (
