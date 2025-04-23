@@ -11,6 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import PlatformIntegration from "./pages/PlatformIntegration";
 import ManageAccounts from "./pages/ManageAccounts";
 import AdminDashboard from "./pages/AdminDashboard";
+import Auth from "./pages/Auth";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -24,15 +26,38 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Home />} />
-          <Route path="/setup" element={<Setup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/platform-integration" element={<PlatformIntegration />} />
-          <Route path="/manage-accounts" element={<ManageAccounts />} />
+          <Route path="/auth" element={<Auth />} />
+          
+          {/* Protected routes */}
+          <Route path="/setup" element={
+            <ProtectedRoute>
+              <Setup />
+            </ProtectedRoute>
+          } />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/platform-integration" element={
+            <ProtectedRoute>
+              <PlatformIntegration />
+            </ProtectedRoute>
+          } />
+          <Route path="/manage-accounts" element={
+            <ProtectedRoute>
+              <ManageAccounts />
+            </ProtectedRoute>
+          } />
+          
+          {/* Admin route */}
           <Route 
             path="/admin" 
             element={isAdmin ? <AdminDashboard /> : <Navigate to="/" replace />} 
           />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

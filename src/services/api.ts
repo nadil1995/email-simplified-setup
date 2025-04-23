@@ -1,3 +1,4 @@
+
 import axios from "axios";
 
 const API_URL = "http://localhost:4000/api";
@@ -8,6 +9,65 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Authentication API
+export const authAPI = {
+  // Register a new user
+  register: async (name: string, email: string, password: string) => {
+    try {
+      // In a real app, this would call an API endpoint
+      // For now, we simulate registration
+      console.log("Registering user", { name, email });
+      
+      // Simulate successful registration
+      return {
+        id: Date.now().toString(),
+        name,
+        email,
+        createdAt: new Date().toISOString(),
+      };
+    } catch (error) {
+      console.error("Error registering user:", error);
+      throw error;
+    }
+  },
+
+  // Login user
+  login: async (email: string, password: string) => {
+    try {
+      // In a real app, this would call an API endpoint
+      // For now, we simulate login
+      console.log("Logging in user", { email });
+      
+      // Simulate successful login
+      return {
+        id: Date.now().toString(),
+        name: "User " + email.split("@")[0],
+        email,
+        createdAt: new Date().toISOString(),
+      };
+    } catch (error) {
+      console.error("Error logging in:", error);
+      throw error;
+    }
+  },
+
+  // Logout user
+  logout: () => {
+    localStorage.removeItem("user");
+  },
+
+  // Check if user is logged in
+  isLoggedIn: () => {
+    return !!localStorage.getItem("user");
+  },
+
+  // Get current user
+  getCurrentUser: () => {
+    const userStr = localStorage.getItem("user");
+    return userStr ? JSON.parse(userStr) : null;
+  },
+};
 
 // Email Setup API
 export const emailSetupAPI = {

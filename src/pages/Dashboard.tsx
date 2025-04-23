@@ -1,11 +1,11 @@
+
 import { useEffect, useState } from "react";
-import { emailSetupAPI } from "@/services/api";
+import { emailSetupAPI, authAPI } from "@/services/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Mail, Globe, Users, ArrowRight } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { LayoutDashboard } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, Globe, Users, ArrowRight, LogOut } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface EmailSetup {
   id: number;
@@ -21,6 +21,8 @@ const Dashboard = () => {
   const [emailSetups, setEmailSetups] = useState<EmailSetup[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const user = authAPI.getCurrentUser();
 
   useEffect(() => {
     const fetchEmailSetups = async () => {
@@ -41,6 +43,15 @@ const Dashboard = () => {
     fetchEmailSetups();
   }, [toast]);
 
+  const handleLogout = () => {
+    authAPI.logout();
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out",
+    });
+    navigate("/");
+  };
+
   const getProviderName = (provider: string) => {
     switch (provider) {
       case "google":
@@ -57,12 +68,23 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <Link to="/setup">
-          <Button>
-            Set Up New Email <ArrowRight className="ml-2 h-4 w-4" />
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          {user && (
+            <p className="text-muted-foreground">Welcome, {user.name}</p>
+          )}
+        </div>
+        <div className="flex gap-2">
+          <Link to="/setup">
+            <Button>
+              Set Up New Email <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+          <Button variant="outline" onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
           </Button>
-        </Link>
+        </div>
       </div>
 
       {loading ? (
@@ -82,7 +104,7 @@ const Dashboard = () => {
               You haven't configured any email accounts yet. Get started by setting up your first email.
             </p>
             <Button asChild>
-              <Link to="/">Set Up Email</Link>
+              <Link to="/setup">Set Up Email</Link>
             </Button>
           </CardContent>
         </Card>
