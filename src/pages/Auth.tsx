@@ -12,29 +12,25 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/30 p-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+        <CardHeader className="text-center space-y-2">
           <CardTitle className="text-2xl">Welcome</CardTitle>
           <CardDescription>
-            Login or register to access your email management dashboard
+            Choose how you'd like to continue
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
+          <SocialLoginButtons />
+          
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="register">Register</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="login">Email Login</TabsTrigger>
+              <TabsTrigger value="register">Email Register</TabsTrigger>
             </TabsList>
             <TabsContent value="login">
-              <div className="space-y-6">
-                <LoginForm />
-                <SocialLoginButtons />
-              </div>
+              <LoginForm />
             </TabsContent>
             <TabsContent value="register">
-              <div className="space-y-6">
-                <RegisterForm />
-                <SocialLoginButtons />
-              </div>
+              <RegisterForm />
             </TabsContent>
           </Tabs>
         </CardContent>

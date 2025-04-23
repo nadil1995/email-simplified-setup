@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Apple, Facebook, Github } from "lucide-react";
+import { Apple, Facebook } from "lucide-react";
 
 const SocialLoginButtons = () => {
   const handleSocialLogin = (provider: string) => {
@@ -9,24 +9,24 @@ const SocialLoginButtons = () => {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
+        <div className="relative flex justify-center text-sm">
           <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
+            Quick sign in with
           </span>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="space-y-2">
         <Button
           variant="outline"
           onClick={() => handleSocialLogin("google")}
-          className="w-full"
+          className="w-full relative h-11 hover:bg-slate-50"
         >
-          <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+          <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -44,23 +44,23 @@ const SocialLoginButtons = () => {
               fill="#EA4335"
             />
           </svg>
-          Google
+          Continue with Google
         </Button>
         <Button
           variant="outline"
           onClick={() => handleSocialLogin("apple")}
-          className="w-full"
+          className="w-full h-11 hover:bg-slate-50"
         >
-          <Apple className="mr-2 h-4 w-4" />
-          Apple
+          <Apple className="mr-2 h-5 w-5" />
+          Continue with Apple
         </Button>
         <Button
           variant="outline"
           onClick={() => handleSocialLogin("facebook")}
-          className="w-full"
+          className="w-full h-11 hover:bg-slate-50"
         >
-          <Facebook className="mr-2 h-4 w-4" />
-          Facebook
+          <Facebook className="mr-2 h-5 w-5" />
+          Continue with Facebook
         </Button>
       </div>
     </div>
