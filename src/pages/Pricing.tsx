@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { authAPI } from "@/services/api";
+import SubscriptionPaymentHandler from "@/components/SubscriptionPaymentHandler";
 
 const Pricing = () => {
   const isLoggedIn = authAPI.isLoggedIn();
@@ -11,6 +12,7 @@ const Pricing = () => {
       name: "Basic",
       price: "$10",
       period: "per month",
+      stripePriceId: "price_basic", // Replace with actual Stripe price ID
       features: [
         "1 Email Account",
         "5GB Storage",
@@ -22,6 +24,7 @@ const Pricing = () => {
       name: "Business",
       price: "$25",
       period: "per month",
+      stripePriceId: "price_business", // Replace with actual Stripe price ID
       features: [
         "5 Email Accounts",
         "25GB Storage",
@@ -34,6 +37,7 @@ const Pricing = () => {
       name: "Enterprise",
       price: "$49",
       period: "per month",
+      stripePriceId: "price_enterprise", // Replace with actual Stripe price ID
       features: [
         "Unlimited Email Accounts",
         "100GB Storage",
@@ -95,11 +99,8 @@ const Pricing = () => {
                   </li>
                 ))}
               </ul>
-              <Button className="w-full" asChild>
-                <Link to={isLoggedIn ? "/setup" : "/auth"}>
-                  {isLoggedIn ? "Choose Plan" : "Get Started"}
-                </Link>
-              </Button>
+              
+              <SubscriptionPaymentHandler plan={plan} />
             </div>
           ))}
         </div>

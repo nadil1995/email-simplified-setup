@@ -14,6 +14,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Auth from "./pages/Auth";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Pricing from "./pages/Pricing";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,11 @@ const App = () => (
           <Route path="/setup" element={
             <ProtectedRoute>
               <Setup />
+            </ProtectedRoute>
+          } />
+          <Route path="/subscription-success" element={
+            <ProtectedRoute>
+              <SubscriptionSuccess />
             </ProtectedRoute>
           } />
           <Route path="/dashboard" element={
