@@ -1,7 +1,8 @@
+
 import axios from "axios";
 
 // Update base URL to point to your API Gateway endpoint
-const API_URL = process.env.REACT_APP_API_GATEWAY_URL || "https://your-api-gateway-url.execute-api.region.amazonaws.com/dev";
+const API_URL = import.meta.env.VITE_API_GATEWAY_URL || "https://your-api-gateway-url.execute-api.region.amazonaws.com/dev";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -12,11 +13,16 @@ const api = axios.create({
 
 // Add interceptor for AWS Cognito authentication
 api.interceptors.request.use(async (config) => {
-  // @ts-ignore
-  const session = await Auth.currentSession();
-  // @ts-ignore
-  const token = session.getIdToken().getJwtToken();
-  config.headers.Authorization = `Bearer ${token}`;
+  try {
+    // @ts-ignore
+    const session = await Auth.currentSession();
+    // @ts-ignore
+    const token = session.getIdToken().getJwtToken();
+    config.headers.Authorization = `Bearer ${token}`;
+  } catch (error) {
+    console.error("Auth error:", error);
+    // Continue without token if auth fails
+  }
   return config;
 });
 
