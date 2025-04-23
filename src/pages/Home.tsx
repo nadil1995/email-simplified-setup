@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -61,7 +60,7 @@ const features = [
   },
 ];
 
-export default function LandingPage() {
+export default function Home() {
   return (
     <div className="bg-background min-h-screen flex flex-col">
       {/* HERO SECTION */}
@@ -73,7 +72,7 @@ export default function LandingPage() {
           Get <span className="font-bold">yourname@yourdomain.com</span> in just a few minutes. <br className="hidden md:block"/> No confusing DNS, no coding, no headaches.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/" className="w-full sm:w-auto">
+          <Link to="/setup" className="w-full sm:w-auto">
             <Button size="lg" className="w-full">
               Get Started
             </Button>
@@ -123,7 +122,7 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/" className="flex">
+                <Link to="/setup" className="flex">
                   <Button
                     size="lg"
                     variant={plan.highlighted ? "default" : "outline"}

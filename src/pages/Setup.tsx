@@ -1,8 +1,8 @@
 
 import EmailSetupWizard from "@/components/EmailSetupWizard";
 
-const Index = () => {
+const Setup = () => {
   return <EmailSetupWizard />;
 };
 
-export default Index;
+export default Setup;

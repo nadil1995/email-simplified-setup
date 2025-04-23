@@ -1,11 +1,12 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import Home from "./pages/Home";
+import Setup from "./pages/Setup";
 import NotFound from "./pages/NotFound";
-import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import PlatformIntegration from "./pages/PlatformIntegration";
 import ManageAccounts from "./pages/ManageAccounts";
@@ -20,8 +21,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/landing" element={<LandingPage />} />
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/setup" element={<Setup />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/platform-integration" element={<PlatformIntegration />} />
           <Route path="/manage-accounts" element={<ManageAccounts />} />
