@@ -1,7 +1,7 @@
-
 import axios from "axios";
 
-const API_URL = "http://localhost:4000/api";
+// Update base URL to point to your API Gateway endpoint
+const API_URL = process.env.REACT_APP_API_GATEWAY_URL || "https://your-api-gateway-url.execute-api.region.amazonaws.com/dev";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -10,49 +10,39 @@ const api = axios.create({
   },
 });
 
-// Authentication API
+// Add interceptor for AWS Cognito authentication
+api.interceptors.request.use(async (config) => {
+  // @ts-ignore
+  const session = await Auth.currentSession();
+  // @ts-ignore
+  const token = session.getIdToken().getJwtToken();
+  config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// Authentication API updated for AWS Cognito
 export const authAPI = {
-  // Register a new user
   register: async (name: string, email: string, password: string) => {
     try {
-      // In a real app, this would call an API endpoint
-      // For now, we simulate registration
-      console.log("Registering user", { name, email });
-      
-      // Simulate successful registration
-      return {
-        id: Date.now().toString(),
-        name,
-        email,
-        createdAt: new Date().toISOString(),
-      };
+      const response = await api.post("/auth/register", { name, email, password });
+      return response.data;
     } catch (error) {
       console.error("Error registering user:", error);
       throw error;
     }
   },
 
-  // Login user
   login: async (email: string, password: string) => {
     try {
-      // In a real app, this would call an API endpoint
-      // For now, we simulate login
-      console.log("Logging in user", { email });
-      
-      // Simulate successful login
-      return {
-        id: Date.now().toString(),
-        name: "User " + email.split("@")[0],
-        email,
-        createdAt: new Date().toISOString(),
-      };
+      const response = await api.post("/auth/login", { email, password });
+      localStorage.setItem("user", JSON.stringify(response.data));
+      return response.data;
     } catch (error) {
       console.error("Error logging in:", error);
       throw error;
     }
   },
 
-  // Logout user
   logout: () => {
     localStorage.removeItem("user");
   },
@@ -69,9 +59,8 @@ export const authAPI = {
   },
 };
 
-// Email Setup API
+// Email Setup API updated for AWS endpoints
 export const emailSetupAPI = {
-  // Create new email setup
   createSetup: async (setupData: {
     domain: string;
     provider: string;
@@ -87,7 +76,6 @@ export const emailSetupAPI = {
     }
   },
 
-  // Get all email setups
   getAllSetups: async () => {
     try {
       const response = await api.get("/email-setup");
