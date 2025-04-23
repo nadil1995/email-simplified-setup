@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { emailSetupAPI, authAPI } from "@/services/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -80,6 +79,12 @@ const Dashboard = () => {
               Set Up New Email <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
+          <Link to="/email">
+            <Button variant="secondary">
+              <Mail className="mr-2 h-4 w-4" />
+              Access Email
+            </Button>
+          </Link>
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Logout
@@ -139,7 +144,9 @@ const Dashboard = () => {
                   </div>
                   <div className="flex gap-2 pt-2">
                     <Button variant="outline" size="sm" className="flex-1">Manage</Button>
-                    <Button size="sm" className="flex-1">Add Users</Button>
+                    <Link to="/email" className="flex-1">
+                      <Button size="sm" className="w-full">Access Email</Button>
+                    </Link>
                   </div>
                 </div>
               </CardContent>

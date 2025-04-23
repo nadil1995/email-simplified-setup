@@ -15,6 +15,7 @@ import Auth from "./pages/Auth";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Pricing from "./pages/Pricing";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+import EmailClient from "./pages/EmailClient";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,11 @@ const App = () => (
           <Route path="/manage-accounts" element={
             <ProtectedRoute>
               <ManageAccounts />
+            </ProtectedRoute>
+          } />
+          <Route path="/email" element={
+            <ProtectedRoute>
+              <EmailClient />
             </ProtectedRoute>
           } />
           
