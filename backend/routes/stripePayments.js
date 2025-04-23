@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { sequelize } = require('../models');
 const Subscription = require('../models/Subscription');
 
 // Create a checkout session for subscription

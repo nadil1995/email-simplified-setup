@@ -11,7 +11,7 @@ const Pricing = () => {
       name: "Basic",
       price: "$10",
       period: "per month",
-      stripePriceId: "price_basic", // Replace with actual Stripe price ID
+      stripePriceId: "price_XXXXX_basic", // Replace with your actual Stripe price ID
       features: [
         "1 Email Account",
         "5GB Storage",
@@ -23,7 +23,7 @@ const Pricing = () => {
       name: "Business",
       price: "$25",
       period: "per month",
-      stripePriceId: "price_business", // Replace with actual Stripe price ID
+      stripePriceId: "price_XXXXX_business", // Replace with your actual Stripe price ID
       features: [
         "5 Email Accounts",
         "25GB Storage",
@@ -36,7 +36,7 @@ const Pricing = () => {
       name: "Enterprise",
       price: "$49",
       period: "per month",
-      stripePriceId: "price_enterprise", // Replace with actual Stripe price ID
+      stripePriceId: "price_XXXXX_enterprise", // Replace with your actual Stripe price ID
       features: [
         "Unlimited Email Accounts",
         "100GB Storage",
