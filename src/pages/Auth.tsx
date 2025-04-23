@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginForm from "@/components/auth/LoginForm";
 import RegisterForm from "@/components/auth/RegisterForm";
+import SocialLoginButtons from "@/components/auth/SocialLoginButtons";
 
 const Auth = () => {
   const [activeTab, setActiveTab] = useState("login");
@@ -24,10 +25,16 @@ const Auth = () => {
               <TabsTrigger value="register">Register</TabsTrigger>
             </TabsList>
             <TabsContent value="login">
-              <LoginForm />
+              <div className="space-y-6">
+                <LoginForm />
+                <SocialLoginButtons />
+              </div>
             </TabsContent>
             <TabsContent value="register">
-              <RegisterForm />
+              <div className="space-y-6">
+                <RegisterForm />
+                <SocialLoginButtons />
+              </div>
             </TabsContent>
           </Tabs>
         </CardContent>
