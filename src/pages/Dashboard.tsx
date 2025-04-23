@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { emailSetupAPI } from "@/services/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -59,19 +58,11 @@ const Dashboard = () => {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <div className="flex gap-2">
-          <Link to="/setup">
-            <Button>
-              Set Up New Email <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-          <Link to="/admin">
-            <Button variant="outline" className="gap-2">
-              <LayoutDashboard className="h-4 w-4" />
-              Admin Panel
-            </Button>
-          </Link>
-        </div>
+        <Link to="/setup">
+          <Button>
+            Set Up New Email <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </Link>
       </div>
 
       {loading ? (
