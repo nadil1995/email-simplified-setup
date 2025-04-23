@@ -16,13 +16,21 @@ interface ComposeEmailProps {
   replyToEmail?: any;
 }
 
+interface EmailFormData {
+  to: string;
+  cc: string;
+  bcc: string;
+  subject: string;
+  message: string;
+}
+
 const ComposeEmail = ({ onCancel, replyToEmail }: ComposeEmailProps) => {
   const [showCcBcc, setShowCcBcc] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [sending, setSending] = useState(false);
   const { toast } = useToast();
   
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm<EmailFormData>({
     defaultValues: {
       to: replyToEmail ? replyToEmail.from : "",
       cc: "",
@@ -32,10 +40,9 @@ const ComposeEmail = ({ onCancel, replyToEmail }: ComposeEmailProps) => {
     }
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: EmailFormData) => {
     setSending(true);
     try {
-      // This would be connected to your email API
       await emailAPI.sendEmail({
         ...data,
         attachments
@@ -46,7 +53,7 @@ const ComposeEmail = ({ onCancel, replyToEmail }: ComposeEmailProps) => {
         description: "Your email has been sent successfully.",
       });
       
-      onCancel(); // Go back to inbox
+      onCancel();
     } catch (error) {
       toast({
         title: "Error",
@@ -58,13 +65,14 @@ const ComposeEmail = ({ onCancel, replyToEmail }: ComposeEmailProps) => {
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setAttachments([...attachments, ...Array.from(e.target.files)]);
+      const fileList = Array.from(e.target.files);
+      setAttachments([...attachments, ...fileList]);
     }
   };
 
-  const removeAttachment = (index) => {
+  const removeAttachment = (index: number) => {
     setAttachments(attachments.filter((_, i) => i !== index));
   };
 

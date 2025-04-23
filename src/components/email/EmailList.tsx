@@ -5,23 +5,32 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { emailAPI } from "@/services/emailAPI";
 
+interface Email {
+  id: string;
+  from: string;
+  subject: string;
+  preview: string;
+  date: string;
+  read: boolean;
+  hasAttachment: boolean;
+}
+
 interface EmailListProps {
   folder: string;
-  onEmailClick: (email: any) => void;
+  onEmailClick: (email: Email) => void;
 }
 
 const EmailList = ({ folder, onEmailClick }: EmailListProps) => {
-  const [emails, setEmails] = useState([]);
+  const [emails, setEmails] = useState<Email[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Simulate fetching emails
     const fetchEmails = async () => {
       try {
         setLoading(true);
         const data = await emailAPI.getEmails(folder);
-        setEmails(data);
+        setEmails(data as Email[]);
       } catch (error) {
         toast({
           title: "Error",
