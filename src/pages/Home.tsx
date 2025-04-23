@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { authAPI } from "@/services/api";
@@ -9,7 +10,10 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex flex-col">
       <header className="container py-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Email Setup Service</h1>
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
+          <Button asChild variant="ghost">
+            <Link to="/pricing">Pricing</Link>
+          </Button>
           {!isLoggedIn ? (
             <>
               <Button asChild variant="outline">

@@ -13,11 +13,12 @@ import ManageAccounts from "./pages/ManageAccounts";
 import AdminDashboard from "./pages/AdminDashboard";
 import Auth from "./pages/Auth";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import Pricing from "./pages/Pricing";
 
 const queryClient = new QueryClient();
 
 // Simple check for admin status - this should be replaced with proper auth logic
-const isAdmin = false; // This should come from your auth system
+const isAdmin = false;
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -28,6 +29,7 @@ const App = () => (
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/auth" element={<Auth />} />
           
           {/* Protected routes - require authentication */}
