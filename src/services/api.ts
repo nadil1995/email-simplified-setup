@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 // Update base URL to point to your API Gateway endpoint
@@ -130,6 +129,32 @@ export const emailPlatformAPI = {
       return response.data;
     } catch (error) {
       console.error("Error creating email account:", error);
+      throw error;
+    }
+  }
+};
+
+// Domain Verification API
+export const domainAPI = {
+  startVerification: async (domain: string) => {
+    try {
+      const response = await api.post("/domain/verify", { domain });
+      return response.data;
+    } catch (error) {
+      console.error("Error starting domain verification:", error);
+      throw error;
+    }
+  },
+
+  checkVerification: async (domain: string, verificationToken: string) => {
+    try {
+      const response = await api.post("/domain/check-verification", { 
+        domain, 
+        verificationToken 
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error checking domain verification:", error);
       throw error;
     }
   }
