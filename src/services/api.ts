@@ -1,3 +1,4 @@
+
 import axios from "axios";
 
 // Update base URL to point to your API Gateway endpoint
@@ -155,6 +156,19 @@ export const domainAPI = {
       return response.data;
     } catch (error) {
       console.error("Error checking domain verification:", error);
+      throw error;
+    }
+  },
+  
+  setupDnsRecords: async (domain: string, provider: string) => {
+    try {
+      const response = await api.post("/domain/setup-dns", { 
+        domain,
+        provider
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error setting up DNS records:", error);
       throw error;
     }
   }
