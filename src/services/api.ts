@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 const API_URL = "http://localhost:4000/api";
@@ -80,6 +79,42 @@ export const emailPlatformAPI = {
       throw error;
     }
   }
+};
+
+// Admin API endpoints
+export const adminAPI = {
+  // Get dashboard statistics
+  getStats: async () => {
+    try {
+      const response = await api.get("/admin/stats");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching admin stats:", error);
+      throw error;
+    }
+  },
+
+  // Get recent inquiries
+  getInquiries: async () => {
+    try {
+      const response = await api.get("/admin/inquiries");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching inquiries:", error);
+      throw error;
+    }
+  },
+
+  // Get sales data
+  getSales: async () => {
+    try {
+      const response = await api.get("/admin/sales");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching sales data:", error);
+      throw error;
+    }
+  },
 };
 
 export default api;
