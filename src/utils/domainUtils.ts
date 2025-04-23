@@ -1,5 +1,5 @@
 
-import { whois } from './whoisClient';
+import { whois, WhoisResponse } from './whoisClient';
 
 export interface DomainInfo {
   registrar: string | null;
@@ -20,19 +20,13 @@ export const getRegistrarInstructions = (registrar: string): string => {
 
 export const checkDomainRegistrar = async (domain: string): Promise<DomainInfo> => {
   try {
-    // In a real implementation, you would make a WHOIS lookup here
-    // For now, we'll simulate the response
-    const mockResponse = {
-      registrar: domain.includes('godaddy') ? 'GoDaddy' : 
-                 domain.includes('namecheap') ? 'Namecheap' : 
-                 'Unknown Registrar',
-      nameservers: ['ns1.example.com', 'ns2.example.com']
-    };
-
+    // Use our whois client to get domain information
+    const whoisResponse = await whois(domain);
+    
     return {
-      registrar: mockResponse.registrar,
-      nameservers: mockResponse.nameservers,
-      instructions: getRegistrarInstructions(mockResponse.registrar)
+      registrar: whoisResponse.registrar,
+      nameservers: whoisResponse.nameservers,
+      instructions: whoisResponse.registrar ? getRegistrarInstructions(whoisResponse.registrar) : 'Unable to detect domain registrar. Please check your domain provider\'s documentation.'
     };
   } catch (error) {
     console.error('Error checking domain registrar:', error);
