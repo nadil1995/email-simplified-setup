@@ -92,7 +92,7 @@ export const emailSetupAPI = {
   },
 };
 
-// Email Platform Integration API
+// Email Platform Integration API with improved error handling
 export const emailPlatformAPI = {
   // Initiate OAuth flow for Google
   connectToGoogle: () => {
@@ -115,7 +115,7 @@ export const emailPlatformAPI = {
     }
   },
 
-  // Create email account on the connected platform
+  // Create email account on the connected platform with improved error handling
   createEmailAccount: async (data: {
     provider: string;
     domain: string;
@@ -125,10 +125,13 @@ export const emailPlatformAPI = {
     password?: string;
   }) => {
     try {
-      const response = await api.post('/email-accounts', data);
+      const response = await api.post('/email/create-account', data);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating email account:", error);
+      if (error.response?.status === 401) {
+        throw new Error('Provider not connected. Please reconnect your account.');
+      }
       throw error;
     }
   }
