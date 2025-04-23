@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { authAPI } from "@/services/api";
+import UserProfile from "@/components/auth/UserProfile";
 
 const Home = () => {
   const isLoggedIn = authAPI.isLoggedIn();
@@ -24,9 +25,12 @@ const Home = () => {
               </Button>
             </>
           ) : (
-            <Button asChild>
-              <Link to="/setup">Go to Setup</Link>
-            </Button>
+            <>
+              <Button asChild>
+                <Link to="/setup">Go to Setup</Link>
+              </Button>
+              <UserProfile />
+            </>
           )}
         </div>
       </header>
