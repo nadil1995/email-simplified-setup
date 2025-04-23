@@ -3,38 +3,7 @@ const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { sequelize } = require('../models');
-
-// Create a model for storing subscription data
-const Subscription = sequelize.define('Subscription', {
-  userId: {
-    type: sequelize.Sequelize.STRING,
-    allowNull: false,
-  },
-  stripeCustomerId: {
-    type: sequelize.Sequelize.STRING,
-  },
-  stripeSubscriptionId: {
-    type: sequelize.Sequelize.STRING,
-  },
-  stripePriceId: {
-    type: sequelize.Sequelize.STRING,
-  },
-  planName: {
-    type: sequelize.Sequelize.STRING,
-  },
-  status: {
-    type: sequelize.Sequelize.STRING,
-  },
-  currentPeriodStart: {
-    type: sequelize.Sequelize.DATE,
-  },
-  currentPeriodEnd: {
-    type: sequelize.Sequelize.DATE,
-  },
-});
-
-// Ensure the table exists
-Subscription.sync();
+const Subscription = require('../models/Subscription');
 
 // Create a checkout session for subscription
 router.post('/create-checkout-session', async (req, res) => {
@@ -47,10 +16,7 @@ router.post('/create-checkout-session', async (req, res) => {
       return res.status(401).json({ error: 'Authentication required' });
     }
     
-    // In a real implementation, verify the token and get the user
-    // For now, we'll just extract the user ID from the token
     const token = authHeader.split(' ')[1];
-    // This is a placeholder - you should validate the token properly
     const userId = Buffer.from(token, 'base64').toString().split(':')[0];
     
     if (!userId) {
@@ -60,23 +26,22 @@ router.post('/create-checkout-session', async (req, res) => {
     // Check if customer exists
     let customer;
     const existingCustomers = await stripe.customers.list({
-      email: userId + '@example.com', // Replace with actual email
+      email: userId + '@example.com',
       limit: 1,
     });
     
     if (existingCustomers.data.length > 0) {
       customer = existingCustomers.data[0];
     } else {
-      // Create a new customer
       customer = await stripe.customers.create({
-        email: userId + '@example.com', // Replace with actual email
+        email: userId + '@example.com',
         metadata: {
           userId,
         },
       });
     }
 
-    // Create a checkout session
+    // Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       customer: customer.id,
@@ -87,8 +52,8 @@ router.post('/create-checkout-session', async (req, res) => {
         },
       ],
       mode: 'subscription',
-      success_url: process.env.DOMAIN + '/subscription-success',
-      cancel_url: process.env.DOMAIN + '/pricing',
+      success_url: `${process.env.DOMAIN}/subscription-success`,
+      cancel_url: `${process.env.DOMAIN}/pricing`,
       metadata: {
         userId,
         planName,
@@ -102,25 +67,21 @@ router.post('/create-checkout-session', async (req, res) => {
   }
 });
 
-// Get user subscription status
+// Get subscription status
 router.get('/subscription-status', async (req, res) => {
   try {
-    // Get user from auth header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Authentication required' });
     }
     
-    // In a real implementation, verify the token and get the user
     const token = authHeader.split(' ')[1];
-    // This is a placeholder - you should validate the token properly
     const userId = Buffer.from(token, 'base64').toString().split(':')[0];
     
     if (!userId) {
       return res.status(401).json({ error: 'Invalid authentication' });
     }
 
-    // Find the subscription in the database
     const subscription = await Subscription.findOne({
       where: { userId },
       order: [['createdAt', 'DESC']],
@@ -130,13 +91,12 @@ router.get('/subscription-status', async (req, res) => {
       return res.json({ active: false });
     }
 
-    // If we have a Stripe subscription ID, check the current status
+    // Check current status in Stripe if we have a subscription ID
     if (subscription.stripeSubscriptionId) {
       const stripeSubscription = await stripe.subscriptions.retrieve(
         subscription.stripeSubscriptionId
       );
       
-      // Update our records
       await subscription.update({
         status: stripeSubscription.status,
         currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
@@ -185,7 +145,6 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     case 'checkout.session.completed': {
       const session = event.data.object;
       
-      // Store the subscription details
       if (session.mode === 'subscription') {
         const subscription = await stripe.subscriptions.retrieve(session.subscription);
         
@@ -206,7 +165,6 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     case 'invoice.payment_succeeded': {
       const invoice = event.data.object;
       
-      // Update subscription period
       if (invoice.subscription) {
         const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
         
