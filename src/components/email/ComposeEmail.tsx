@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Paperclip, Send, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { emailAPI } from "@/services/emailAPI";
+import RichTextEditor from "./RichTextEditor";
 
 interface ComposeEmailProps {
   onCancel: () => void;
@@ -76,6 +76,21 @@ const ComposeEmail = ({ onCancel, replyToEmail }: ComposeEmailProps) => {
     setAttachments(attachments.filter((_, i) => i !== index));
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (e.dataTransfer.files) {
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      setAttachments([...attachments, ...droppedFiles]);
+    }
+  };
+
   return (
     <>
       <CardContent className="p-6">
@@ -125,12 +140,21 @@ const ComposeEmail = ({ onCancel, replyToEmail }: ComposeEmailProps) => {
           
           <div>
             <Label htmlFor="message">Message</Label>
-            <Textarea 
-              id="message" 
-              placeholder="Write your message here..." 
-              className="min-h-[200px]"
-              {...register("message", { required: "Message is required" })}
-            />
+            <div 
+              className="border-2 border-dashed rounded-lg p-4 transition-colors hover:border-primary/50"
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <RichTextEditor
+                value={replyToEmail ? `\n\n------ Original Message ------\n${replyToEmail.body}` : ""}
+                onChange={(value) => {
+                  register("message").onChange({ target: { value } });
+                }}
+              />
+              <p className="text-sm text-muted-foreground mt-2">
+                Drag and drop files here or use the attach button below
+              </p>
+            </div>
             {errors.message && <p className="text-sm text-destructive mt-1">{errors.message.message}</p>}
           </div>
           
@@ -139,7 +163,7 @@ const ComposeEmail = ({ onCancel, replyToEmail }: ComposeEmailProps) => {
               <Label>Attachments</Label>
               <div className="mt-2 space-y-2">
                 {attachments.map((file, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                  <div key={index} className="flex items-center justify-between bg-muted/50 p-2 rounded-md">
                     <div className="text-sm flex items-center">
                       <Paperclip className="h-4 w-4 mr-2" />
                       {file.name} ({Math.round(file.size / 1024)} KB)
