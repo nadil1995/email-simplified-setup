@@ -1,7 +1,8 @@
-import axios from "axios";
 
-// Update base URL to point to your API Gateway endpoint
-const API_URL = import.meta.env.VITE_API_GATEWAY_URL || "https://your-api-gateway-url.execute-api.region.amazonaws.com/dev";
+import axios from 'axios';
+
+// Update base URL to point to your new API Gateway endpoint
+const API_URL = import.meta.env.VITE_API_GATEWAY_URL || "https://6dyf19l0hk.execute-api.us-east-1.amazonaws.com/dev";
 
 const api = axios.create({
   baseURL: API_URL,
