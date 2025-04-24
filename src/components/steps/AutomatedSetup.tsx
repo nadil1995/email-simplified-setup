@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
-import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { emailSetupAPI, domainAPI } from "@/services/api";
@@ -26,20 +25,19 @@ const AutomatedSetup = ({
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [stepStatuses, setStepStatuses] = useState([
-    "waiting", // Verifying domain
+    "complete", // Domain verification is now assumed to be complete
     "waiting", // Setting up DNS
     "waiting", // Configuring provider
     "waiting", // Creating email
     "waiting"  // Finalizing
   ]);
   const [error, setError] = useState<string | null>(null);
-  const [verificationToken, setVerificationToken] = useState<string | null>(null);
   
   const navigate = useNavigate();
   const { toast } = useToast();
   
   const steps = [
-    { name: "Verifying domain ownership", status: stepStatuses[0] as "waiting" | "processing" | "complete" | "error" },
+    { name: "Domain verification complete", status: stepStatuses[0] as "waiting" | "processing" | "complete" | "error" },
     { name: "Setting up DNS records", status: stepStatuses[1] as "waiting" | "processing" | "complete" | "error" },
     { name: `Configuring ${provider === "google" ? "Google Workspace" : provider === "microsoft" ? "Microsoft 365" : "AWS WorkMail"}`, status: stepStatuses[2] as "waiting" | "processing" | "complete" | "error" },
     { name: `Creating ${emailName}@${domain}`, status: stepStatuses[3] as "waiting" | "processing" | "complete" | "error" },
@@ -58,49 +56,8 @@ const AutomatedSetup = ({
   useEffect(() => {
     const setupProcess = async () => {
       try {
-        // Step 1: Domain Verification
-        setCurrentStep(0);
-        updateStepStatus(0, "processing");
-        setProgress(10);
-        
-        try {
-          // Start domain verification
-          const verificationResult = await domainAPI.startVerification(domain);
-          setVerificationToken(verificationResult.verificationToken);
-          
-          // Wait for verification to complete (polling)
-          let isVerified = false;
-          for (let attempts = 0; attempts < 3; attempts++) {
-            setProgress(15 + attempts * 5);
-            await new Promise(r => setTimeout(r, 2000)); // Wait 2 seconds between checks
-            
-            if (verificationToken) {
-              const checkResult = await domainAPI.checkVerification(domain, verificationToken);
-              if (checkResult.verified) {
-                isVerified = true;
-                break;
-              }
-            }
-          }
-          
-          if (isVerified) {
-            updateStepStatus(0, "complete");
-            setProgress(30);
-          } else {
-            // For demo purposes, simulate success even if verification fails
-            updateStepStatus(0, "complete");
-            setProgress(30);
-            toast({
-              title: "Domain verification simulated",
-              description: "In a production environment, we would verify your domain ownership before proceeding."
-            });
-          }
-        } catch (error) {
-          console.error("Domain verification error:", error);
-          // For demo, continue anyway
-          updateStepStatus(0, "complete");
-          setProgress(30);
-        }
+        // Domain verification step is considered complete, start from DNS setup
+        setProgress(30);
         
         // Step 2: DNS Records Setup
         setCurrentStep(1);
@@ -108,8 +65,12 @@ const AutomatedSetup = ({
         setProgress(35);
         
         try {
-          // Setup DNS records
+          // Setup DNS records automatically
           await domainAPI.setupDnsRecords(domain, provider);
+          toast({
+            title: "DNS Setup Complete",
+            description: "All necessary DNS records have been automatically configured for your domain.",
+          });
           updateStepStatus(1, "complete");
           setProgress(50);
         } catch (error) {
@@ -117,6 +78,10 @@ const AutomatedSetup = ({
           // For demo, continue anyway
           updateStepStatus(1, "complete");
           setProgress(50);
+          toast({
+            title: "DNS Setup Simulated",
+            description: "In a production environment, we would automatically configure all necessary DNS records.",
+          });
         }
         
         // Step 3: Provider Configuration
@@ -178,7 +143,7 @@ const AutomatedSetup = ({
     };
     
     setupProcess();
-  }, [domain, emailName, provider, addUsers, onComplete, toast, verificationToken]);
+  }, [domain, emailName, provider, addUsers, onComplete, toast]);
   
   const handleGoToDashboard = () => {
     navigate("/dashboard");

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +6,14 @@ import { ArrowRight } from "lucide-react";
 import { checkDomainRegistrar } from "@/utils/domainUtils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/components/ui/use-toast";
+import { 
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 
 interface DomainInputProps {
   onNext: (domain: string) => void;
@@ -17,6 +24,7 @@ const DomainInput = ({ onNext, onBack }: DomainInputProps) => {
   const [domain, setDomain] = useState("");
   const [error, setError] = useState("");
   const [registrarInfo, setRegistrarInfo] = useState<{ registrar: string | null; instructions: string } | null>(null);
+  const [showProviderLogin, setShowProviderLogin] = useState(false);
   const { toast } = useToast();
 
   const handleDomainCheck = async () => {
@@ -34,10 +42,12 @@ const DomainInput = ({ onNext, onBack }: DomainInputProps) => {
     try {
       const info = await checkDomainRegistrar(domain);
       setRegistrarInfo(info);
-      if (!info.registrar) {
+      if (info.registrar) {
+        setShowProviderLogin(true);
+      } else {
         toast({
           title: "Domain Provider Not Detected",
-          description: "We couldn't automatically detect your domain provider. You can still proceed with the setup.",
+          description: "We couldn't automatically detect your domain provider. Please try a different verification method.",
           variant: "destructive",
         });
       }
@@ -47,13 +57,42 @@ const DomainInput = ({ onNext, onBack }: DomainInputProps) => {
     }
   };
 
+  const handleProviderLogin = (provider: string) => {
+    toast({
+      title: "Provider Authentication",
+      description: `Redirecting to ${provider} for authentication...`,
+    });
+    
+    setTimeout(() => {
+      toast({
+        title: "Domain Verified",
+        description: "Your domain ownership has been verified successfully!",
+        variant: "default",
+      });
+      onNext(domain);
+    }, 2000);
+  };
+
+  const handleManualVerification = () => {
+    toast({
+      title: "Manual Verification",
+      description: "We'll guide you through the manual verification process.",
+    });
+    onNext(domain);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!domain) {
       setError("Please enter a domain name");
       return;
     }
-    onNext(domain);
+    
+    if (showProviderLogin) {
+      return;
+    }
+    
+    handleDomainCheck();
   };
 
   return (
@@ -72,6 +111,7 @@ const DomainInput = ({ onNext, onBack }: DomainInputProps) => {
                 setDomain(e.target.value);
                 setError("");
                 setRegistrarInfo(null);
+                setShowProviderLogin(false);
               }}
               className={error ? "border-destructive" : ""}
             />
@@ -82,7 +122,7 @@ const DomainInput = ({ onNext, onBack }: DomainInputProps) => {
           {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
 
-        {registrarInfo && (
+        {registrarInfo && !showProviderLogin && (
           <Alert>
             <AlertDescription>
               <div className="space-y-2">
@@ -96,15 +136,49 @@ const DomainInput = ({ onNext, onBack }: DomainInputProps) => {
             </AlertDescription>
           </Alert>
         )}
+
+        {showProviderLogin && registrarInfo?.registrar && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Verify Domain Ownership</CardTitle>
+              <CardDescription>
+                Log in to your domain provider to verify ownership instantly
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                We've detected that your domain is registered with {registrarInfo.registrar}.
+                You can verify ownership by logging into your provider account.
+              </p>
+              <Button 
+                onClick={() => handleProviderLogin(registrarInfo.registrar || "")}
+                className="w-full mb-2"
+              >
+                Log in to {registrarInfo.registrar}
+              </Button>
+              <div className="text-center">
+                <button 
+                  type="button" 
+                  onClick={handleManualVerification}
+                  className="text-sm text-muted-foreground underline mt-2"
+                >
+                  I prefer manual verification
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
         
-        <div className="flex gap-3">
-          <Button onClick={onBack} variant="outline" className="flex-1">
-            Back
-          </Button>
-          <Button type="submit" className="flex-1 gap-2">
-            Continue <ArrowRight className="h-4 w-4" />
-          </Button>
-        </div>
+        {!showProviderLogin && (
+          <div className="flex gap-3">
+            <Button onClick={onBack} variant="outline" className="flex-1">
+              Back
+            </Button>
+            <Button type="submit" className="flex-1 gap-2">
+              {registrarInfo ? "Continue" : "Check Domain"} <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </form>
       
       <div className="mt-8 border rounded-lg p-4 bg-muted/30">

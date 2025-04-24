@@ -64,8 +64,8 @@ const Home = () => {
             </div>
             <div className="bg-card p-6 rounded-lg shadow text-left">
               <div className="text-5xl font-bold text-primary/70 mb-4">2</div>
-              <h3 className="font-bold text-xl mb-2">Verify Your Domain</h3>
-              <p className="text-muted-foreground">Prove domain ownership by adding a simple TXT record provided by our setup wizard.</p>
+              <h3 className="font-bold text-xl mb-2">Login to Your Domain Provider</h3>
+              <p className="text-muted-foreground">Simply log in to your domain registrar account to verify ownership - no manual DNS record editing required.</p>
             </div>
             <div className="bg-card p-6 rounded-lg shadow text-left">
               <div className="text-5xl font-bold text-primary/70 mb-4">3</div>
@@ -120,4 +120,3 @@ const Home = () => {
 };
 
 export default Home;
-

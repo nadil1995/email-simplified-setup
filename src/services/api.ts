@@ -167,11 +167,38 @@ export const domainAPI = {
       const response = await api.post("/domain/setup-dns", { 
         domain,
         provider,
-        hostedZoneId
+        hostedZoneId,
+        autoSetup: true // New flag to indicate automatic setup
       });
       return response.data;
     } catch (error) {
       console.error("Error setting up DNS records:", error);
+      throw error;
+    }
+  },
+  
+  // New methods for provider authentication
+  authenticateProvider: async (domain: string, provider: string, credentials: any) => {
+    try {
+      const response = await api.post("/domain/authenticate-provider", {
+        domain,
+        provider,
+        credentials
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error authenticating with provider:", error);
+      throw error;
+    }
+  },
+  
+  // Get authentication URL for OAuth with domain providers that support it
+  getProviderAuthUrl: async (domain: string, provider: string) => {
+    try {
+      const response = await api.get(`/domain/provider-auth-url?domain=${domain}&provider=${provider}`);
+      return response.data.authUrl;
+    } catch (error) {
+      console.error("Error getting provider auth URL:", error);
       throw error;
     }
   }
