@@ -53,6 +53,49 @@ const Home = () => {
         </div>
       </main>
       
+      <section id="how-to-use" className="bg-muted/20 py-16">
+        <div className="container">
+          <h2 className="text-3xl font-bold text-center mb-12">How to Use Our Email Setup Service</h2>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="bg-card p-6 rounded-lg shadow text-left">
+              <div className="text-5xl font-bold text-primary/70 mb-4">1</div>
+              <h3 className="font-bold text-xl mb-2">Subscribe to a Plan</h3>
+              <p className="text-muted-foreground">Choose a subscription that fits your business needs from our transparent pricing options.</p>
+            </div>
+            <div className="bg-card p-6 rounded-lg shadow text-left">
+              <div className="text-5xl font-bold text-primary/70 mb-4">2</div>
+              <h3 className="font-bold text-xl mb-2">Verify Your Domain</h3>
+              <p className="text-muted-foreground">Prove domain ownership by adding a simple TXT record provided by our setup wizard.</p>
+            </div>
+            <div className="bg-card p-6 rounded-lg shadow text-left">
+              <div className="text-5xl font-bold text-primary/70 mb-4">3</div>
+              <h3 className="font-bold text-xl mb-2">Create Email Accounts</h3>
+              <p className="text-muted-foreground">Set up professional email addresses like info@yourdomain.com in just a few clicks.</p>
+            </div>
+            <div className="bg-card p-6 rounded-lg shadow text-left">
+              <div className="text-5xl font-bold text-primary/70 mb-4">4</div>
+              <h3 className="font-bold text-xl mb-2">Connect Provider</h3>
+              <p className="text-muted-foreground">Integrate with Google Workspace or Microsoft 365 to manage your new email accounts.</p>
+            </div>
+            <div className="bg-card p-6 rounded-lg shadow text-left">
+              <div className="text-5xl font-bold text-primary/70 mb-4">5</div>
+              <h3 className="font-bold text-xl mb-2">Invite Team Members</h3>
+              <p className="text-muted-foreground">Easily invite and manage team email accounts from your dashboard.</p>
+            </div>
+            <div className="bg-card p-6 rounded-lg shadow text-left">
+              <div className="text-5xl font-bold text-primary/70 mb-4">6</div>
+              <h3 className="font-bold text-xl mb-2">Start Communicating</h3>
+              <p className="text-muted-foreground">Begin using your professional email addresses across your favorite email clients.</p>
+            </div>
+          </div>
+          <div className="text-center mt-12">
+            <Button asChild size="lg">
+              <Link to="/pricing">Get Started Now</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+      
       <footer id="features" className="border-t py-10 bg-muted/30">
         <div className="container text-center">
           <h2 className="text-3xl font-bold mb-8">Why Choose Us</h2>
@@ -77,3 +120,4 @@ const Home = () => {
 };
 
 export default Home;
+
